@@ -576,6 +576,7 @@
       <div class="actions">
         <button id="calculateHotelBtn">計算飯店最省組合</button>
         <button id="copyHotelSummaryBtn" class="secondary-btn" type="button" disabled>複製本次組合摘要</button>
+        <button id="clearHotelHistoryBtn" class="secondary-btn" type="button">清除暫存紀錄</button>
         <p id="copyHotelSummaryHint" class="copy-hint"></p>
       </div>
 
@@ -608,6 +609,7 @@
     const pointsNightList = document.getElementById("pointsNightList");
     const calculateHotelBtn = document.getElementById("calculateHotelBtn");
     const copyHotelSummaryBtn = document.getElementById("copyHotelSummaryBtn");
+    const clearHotelHistoryBtn = document.getElementById("clearHotelHistoryBtn");
     const copyHotelSummaryHint = document.getElementById("copyHotelSummaryHint");
     const hotelResult = document.getElementById("hotelResult");
     const hotelHistoryKey = "hotelCompareHistory";
@@ -954,6 +956,15 @@
       copyHotelSummaryHint.textContent = `已複製 ${record.time} 的摘要。`;
     }
 
+    function clearHotelHistory() {
+      localStorage.removeItem(hotelHistoryKey);
+      hotelResult.innerHTML = `
+        <div>已清除暫存紀錄。</div>
+        ${renderHotelHistory()}
+      `;
+      copyHotelSummaryHint.textContent = "已清除最近 3 次暫存紀錄。";
+    }
+
     function calc() {
       const cashPrice = Number(cashPriceInput.value);
       const milesNeeded = Number(milesNeededInput.value);
@@ -1023,6 +1034,7 @@
     });
     calculateHotelBtn.addEventListener("click", calcHotel);
     copyHotelSummaryBtn.addEventListener("click", copyHotelSummary);
+    clearHotelHistoryBtn.addEventListener("click", clearHotelHistory);
     refreshRatesBtn.addEventListener("click", refreshExchangeRates);
     hotelResult.addEventListener("click", (event) => {
       const target = event.target;
