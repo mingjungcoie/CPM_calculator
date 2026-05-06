@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>每哩成本（CPM）計算機｜台幣版</title>
+  <title>哩程與飯店點數比較工具｜台幣版</title>
   <style>
     :root {
       --bg: #f3f5f8;
@@ -16,6 +16,15 @@
       --ok: #1d7048;
       --warn: #9a6700;
       --bad: #a3334a;
+    }
+
+    body.hotel-theme {
+      --brand: #c46a18;
+      --brand-dark: #9e5514;
+      --line: #f0dcc8;
+      --ok: #b45309;
+      --warn: #c16a08;
+      --bad: #9a3412;
     }
 
     * {
@@ -95,6 +104,39 @@
       box-shadow: 0 1px 3px rgba(26, 35, 50, 0.06);
     }
 
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab-btn {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--brand);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
     h2 {
       margin: 0 0 14px;
       font-size: 20px;
@@ -165,9 +207,64 @@
       background: transparent;
     }
 
+    select {
+      border: 0;
+      outline: 0;
+      width: 100%;
+      font-size: 16px;
+      color: var(--text);
+      background: transparent;
+    }
+
     input[type="range"] {
       width: 100%;
       accent-color: var(--brand);
+    }
+
+    .range-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .adjust-btn {
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid #c8d2df;
+      background: #fff;
+      color: var(--brand);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .adjust-btn:hover {
+      background: #f0f4f8;
+    }
+
+    .adjust-btn:active {
+      transform: translateY(1px);
+    }
+
+    .target-input-wrap {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fafbfc;
+      padding: 8px 10px;
+      max-width: 210px;
+    }
+
+    .target-input-wrap input[type="number"] {
+      font-size: 18px;
+      text-align: right;
     }
 
     .range-labels {
@@ -221,6 +318,106 @@
       line-height: 1.6;
     }
 
+    .night-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .night-row {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fafbfc;
+    }
+
+    .night-row-title {
+      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #2a4365;
+    }
+
+    body.hotel-theme #hotelPage .section-title,
+    body.hotel-theme #hotelPage .night-row-title {
+      color: #9a4d00;
+    }
+
+    body.hotel-theme #hotelPage .badge {
+      background: #d97706;
+    }
+
+    .night-row-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mini-input-wrap {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px 10px;
+      gap: 6px;
+    }
+
+    .mini-input-wrap input[type="number"] {
+      font-size: 18px;
+    }
+
+    .history-list {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .history-copy-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--brand);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      color: var(--brand);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .secondary-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .copy-hint {
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 20px;
+      margin: 0;
+    }
+
     .kpi {
       font-size: 22px;
       font-weight: 700;
@@ -248,6 +445,22 @@
     .score.bad {
       color: var(--bad);
     }
+
+    @media (max-width: 520px) {
+      .adjust-btn {
+        width: 42px;
+        min-width: 42px;
+        height: 42px;
+      }
+
+      .target-input-wrap {
+        max-width: 100%;
+      }
+
+      .night-row-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -255,78 +468,490 @@
     <section class="hero">
       <div class="kicker">Next journey starts now</div>
       <h1>每哩成本（CPM）計算機</h1>
-      <p>用最短的時間，算出這張哩程票的「每哩價值」與 CPM。<br />帶上好心情，下一段旅程出發。</p>
+      <p>機票哩程與飯店點數都能算。<br />快速比較現金、點數與混搭訂法的最佳解。</p>
     </section>
 
-    <section class="card">
-      <h3 class="section-title"><span class="badge">1</span> 現金票價（含稅）</h3>
-      <div class="field">
-        <label for="cashPrice">機票總現金價 <span class="hint">（你若直接購票需支付的總額）</span></label>
-        <div class="input-wrap">
-          <span class="prefix">NT$</span>
-          <input id="cashPrice" type="number" min="0" value="10000" />
-          <span class="suffix">元</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h3 class="section-title"><span class="badge">2</span> 哩數換票資訊</h3>
-      <div class="field">
-        <label for="milesNeeded">所需哩數 <span class="hint">（兌換這張機票要扣的哩程）</span></label>
-        <div class="input-wrap">
-          <input id="milesNeeded" type="number" min="1" value="26000" />
-          <span class="suffix">哩</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="taxFee">兌換時仍需支付稅費 <span class="hint">（機場稅、燃油費等）</span></label>
-        <div class="input-wrap">
-          <span class="prefix">NT$</span>
-          <input id="taxFee" type="number" min="0" value="1200" />
-          <span class="suffix">元</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h3 class="section-title"><span class="badge">3</span> 你對每哩價值的估值</h3>
-      <div class="field">
-        <label for="targetValue">每哩估值</label>
-        <input id="targetValue" type="range" min="0.2" max="2.5" value="0.8" step="0.01" />
-        <div class="range-labels">
-          <span>NT$0.20</span>
-          <span>NT$1.00</span>
-          <span>NT$2.50</span>
-        </div>
-        <div class="value-box">目前估值：<span id="targetValueText">NT$0.80 / 哩</span></div>
-      </div>
-    </section>
-
-    <div class="actions">
-      <button id="calculateBtn">計算 CPM</button>
+    <div class="tabs">
+      <button id="flightTabBtn" class="tab-btn active" type="button">機票哩程</button>
+      <button id="hotelTabBtn" class="tab-btn" type="button">飯店點數</button>
     </div>
 
-    <section id="result" class="result" aria-live="polite">
-      <div>填入資料後按「計算 CPM」。</div>
+    <section id="flightPage" class="page active">
+      <section class="card">
+        <h3 class="section-title"><span class="badge">1</span> 現金票價（含稅）</h3>
+        <div class="field">
+          <label for="cashPrice">機票總現金價 <span class="hint">（你若直接購票需支付的總額）</span></label>
+          <div class="input-wrap">
+            <span class="prefix">NT$</span>
+            <input id="cashPrice" type="number" min="0" value="10000" />
+            <span class="suffix">元</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3 class="section-title"><span class="badge">2</span> 哩數換票資訊</h3>
+        <div class="field">
+          <label for="milesNeeded">所需哩數 <span class="hint">（兌換這張機票要扣的哩程）</span></label>
+          <div class="input-wrap">
+            <input id="milesNeeded" type="number" min="1" value="26000" />
+            <span class="suffix">哩</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="taxFee">兌換時仍需支付稅費 <span class="hint">（機場稅、燃油費等）</span></label>
+          <div class="input-wrap">
+            <span class="prefix">NT$</span>
+            <input id="taxFee" type="number" min="0" value="1200" />
+            <span class="suffix">元</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3 class="section-title"><span class="badge">3</span> 你對每哩價值的估值</h3>
+        <div class="field">
+          <label for="targetValue">每哩估值</label>
+          <div class="range-control">
+            <button id="targetMinusBtn" class="adjust-btn" type="button" aria-label="降低每哩估值">-</button>
+            <input id="targetValue" type="range" min="0.2" max="2.5" value="0.8" step="0.01" />
+            <button id="targetPlusBtn" class="adjust-btn" type="button" aria-label="提高每哩估值">+</button>
+          </div>
+          <div class="target-input-wrap">
+            <span class="prefix">NT$</span>
+            <input id="targetValueNumber" type="number" min="0.2" max="2.5" step="0.01" value="0.8" inputmode="decimal" />
+            <span class="suffix">/ 哩</span>
+          </div>
+          <div class="range-labels">
+            <span>NT$0.20</span>
+            <span>NT$1.00</span>
+            <span>NT$2.50</span>
+          </div>
+          <div class="value-box">目前估值：<span id="targetValueText">NT$0.80 / 哩</span></div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="calculateBtn">計算 CPM</button>
+      </div>
+
+      <section id="result" class="result" aria-live="polite">
+        <div>填入資料後按「計算 CPM」。</div>
+      </section>
+    </section>
+
+    <section id="hotelPage" class="page">
+      <section class="card">
+        <h3 class="section-title"><span class="badge">1</span> 現金住房價</h3>
+        <div class="field">
+          <label>匯率（換算為台幣比較）</label>
+          <div class="actions" style="margin-top: 0;">
+            <button id="refreshRatesBtn" class="secondary-btn" type="button">更新匯率</button>
+            <p id="rateStatusText" class="copy-hint">目前使用預設匯率。</p>
+            <div id="rateDetailText" class="copy-hint"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="hotelNights">入住晚數</label>
+          <div class="input-wrap">
+            <input id="hotelNights" type="number" min="1" max="14" value="2" />
+            <span class="suffix">晚</span>
+          </div>
+        </div>
+        <div class="night-list" id="cashNightList"></div>
+      </section>
+
+      <section class="card">
+        <h3 class="section-title"><span class="badge">2</span> 點數換房資訊</h3>
+        <div class="hint" style="margin-bottom: 10px;">每晚可選不同飯店計畫，並填入該晚點數與每點估值。</div>
+        <div class="night-list" id="pointsNightList"></div>
+      </section>
+
+      <section class="card">
+        <h3 class="section-title"><span class="badge">3</span> 比較說明</h3>
+        <div class="hint">系統會逐晚比較「現金房價」與「點數 * 該晚每點估值」，自動挑選最低成本組合。</div>
+      </section>
+
+      <div class="actions">
+        <button id="calculateHotelBtn">計算飯店最省組合</button>
+        <button id="copyHotelSummaryBtn" class="secondary-btn" type="button" disabled>複製本次組合摘要</button>
+        <p id="copyHotelSummaryHint" class="copy-hint"></p>
+      </div>
+
+      <section id="hotelResult" class="result" aria-live="polite">
+        <div>設定每晚現金與點數後，按「計算飯店最省組合」。</div>
+      </section>
+
     </section>
   </main>
 
   <script>
+    const flightTabBtn = document.getElementById("flightTabBtn");
+    const hotelTabBtn = document.getElementById("hotelTabBtn");
+    const flightPage = document.getElementById("flightPage");
+    const hotelPage = document.getElementById("hotelPage");
+
     const cashPriceInput = document.getElementById("cashPrice");
     const milesNeededInput = document.getElementById("milesNeeded");
     const taxFeeInput = document.getElementById("taxFee");
     const targetValueInput = document.getElementById("targetValue");
+    const targetValueNumberInput = document.getElementById("targetValueNumber");
+    const targetMinusBtn = document.getElementById("targetMinusBtn");
+    const targetPlusBtn = document.getElementById("targetPlusBtn");
     const targetValueText = document.getElementById("targetValueText");
     const calculateBtn = document.getElementById("calculateBtn");
     const resultBox = document.getElementById("result");
 
+    const hotelNightsInput = document.getElementById("hotelNights");
+    const cashNightList = document.getElementById("cashNightList");
+    const pointsNightList = document.getElementById("pointsNightList");
+    const calculateHotelBtn = document.getElementById("calculateHotelBtn");
+    const copyHotelSummaryBtn = document.getElementById("copyHotelSummaryBtn");
+    const copyHotelSummaryHint = document.getElementById("copyHotelSummaryHint");
+    const hotelResult = document.getElementById("hotelResult");
+    const hotelHistoryKey = "hotelCompareHistory";
+    let latestHotelSummary = "";
+    const nightOrderText = ["第一晚", "第二晚", "第三晚", "第四晚", "第五晚", "第六晚", "第七晚", "第八晚", "第九晚", "第十晚", "第十一晚", "第十二晚", "第十三晚", "第十四晚"];
+    const hotelPlans = ["Choice", "IHG", "Hilton Honors", "HYATT", "Wyndham", "Marriott", "Accor", "GHA", "I Prefer"];
+    const hotelCurrencies = ["TWD", "USD", "JPY", "KRW", "EUR", "GBP"];
+    const refreshRatesBtn = document.getElementById("refreshRatesBtn");
+    const rateStatusText = document.getElementById("rateStatusText");
+    const rateDetailText = document.getElementById("rateDetailText");
+    let exchangeRatesToTwd = {
+      TWD: 1,
+      USD: 32,
+      JPY: 0.22,
+      KRW: 0.024,
+      EUR: 35,
+      GBP: 41
+    };
+
     const fmtTwd = (n) => `NT$${Number(n).toLocaleString("zh-Hant-TW", { maximumFractionDigits: 0 })}`;
     const fmt2 = (n) => Number(n).toLocaleString("zh-Hant-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const clampTargetValue = (value) => {
+      const min = Number(targetValueInput.min);
+      const max = Number(targetValueInput.max);
+      return Math.min(Math.max(value, min), max);
+    };
+    function switchPage(type) {
+      const isFlight = type === "flight";
+      flightTabBtn.classList.toggle("active", isFlight);
+      hotelTabBtn.classList.toggle("active", !isFlight);
+      flightPage.classList.toggle("active", isFlight);
+      hotelPage.classList.toggle("active", !isFlight);
+      document.body.classList.toggle("hotel-theme", !isFlight);
+    }
 
     function updateTargetText() {
       targetValueText.textContent = `NT$${fmt2(targetValueInput.value)} / 哩`;
+    }
+
+    function setTargetValue(value) {
+      const step = Number(targetValueInput.step) || 0.01;
+      const safeValue = clampTargetValue(Number(value));
+      const rounded = Math.round(safeValue / step) * step;
+      const finalValue = clampTargetValue(Number(rounded.toFixed(2)));
+      targetValueInput.value = finalValue.toFixed(2);
+      targetValueNumberInput.value = finalValue.toFixed(2);
+      updateTargetText();
+    }
+
+    function readNightValues(selector) {
+      return Array.from(document.querySelectorAll(selector)).map((input) => input.value);
+    }
+
+    function readNightChecked(selector) {
+      return Array.from(document.querySelectorAll(selector)).map((input) => input.checked);
+    }
+
+    function getCurrencySymbolLabel(currency) {
+      const symbolMap = {
+        TWD: "NT$",
+        USD: "US$",
+        JPY: "YEN ¥",
+        KRW: "₩",
+        EUR: "EUR €",
+        GBP: "GBP £"
+      };
+      return symbolMap[currency] || currency;
+    }
+
+    function renderNightLists() {
+      const nights = Math.min(Math.max(Number(hotelNightsInput.value) || 1, 1), 14);
+      hotelNightsInput.value = String(nights);
+      const previousCash = readNightValues(".hotel-cash-night");
+      const previousHotelNames = readNightValues(".hotel-name-night");
+      const previousPoints = readNightValues(".hotel-point-night");
+      const previousPlans = readNightValues(".hotel-plan-select");
+      const previousPointValues = readNightValues(".hotel-point-value-night");
+      const previousNoRedeem = readNightChecked(".hotel-no-redeem-night");
+      const previousCurrencies = readNightValues(".hotel-currency-night");
+
+      cashNightList.innerHTML = "";
+      pointsNightList.innerHTML = "";
+      for (let i = 0; i < nights; i += 1) {
+        const nightNo = i + 1;
+        const cashValue = previousCash[i] || "0";
+        const hotelName = previousHotelNames[i] || "";
+        const pointsValue = previousPoints[i] || "0";
+        const planValue = previousPlans[i] || hotelPlans[0];
+        const pointValue = previousPointValues[i] || "0.20";
+        const noRedeemChecked = previousNoRedeem[i] ? "checked" : "";
+        const disableRedeemInputs = previousNoRedeem[i] ? "disabled" : "";
+        const currencyValue = previousCurrencies[i] || "TWD";
+        const currencySymbolLabel = getCurrencySymbolLabel(currencyValue);
+        const planOptions = hotelPlans.map((plan) => {
+          const selected = plan === planValue ? "selected" : "";
+          return `<option value="${plan}" ${selected}>${plan}</option>`;
+        }).join("");
+        const currencyOptions = hotelCurrencies.map((currency) => {
+          const selected = currency === currencyValue ? "selected" : "";
+          return `<option value="${currency}" ${selected}>${currency}</option>`;
+        }).join("");
+
+        cashNightList.insertAdjacentHTML("beforeend", `
+          <div class="night-row">
+            <p class="night-row-title">第 ${nightNo} 晚</p>
+            <div class="mini-input-wrap" style="margin-bottom: 8px;">
+              <span class="prefix">幣別</span>
+              <select class="hotel-currency-night">${currencyOptions}</select>
+            </div>
+            <div class="mini-input-wrap" style="margin-bottom: 8px;">
+              <span class="prefix">飯店</span>
+              <input class="hotel-name-night" type="text" value="${hotelName}" placeholder="輸入飯店名稱" />
+            </div>
+            <div class="mini-input-wrap">
+              <span class="prefix hotel-cash-currency-symbol">${currencySymbolLabel}</span>
+              <input class="hotel-cash-night" type="number" min="0" value="${cashValue}" />
+              <span class="suffix">元</span>
+            </div>
+          </div>
+        `);
+
+        pointsNightList.insertAdjacentHTML("beforeend", `
+          <div class="night-row">
+            <p class="night-row-title">第 ${nightNo} 晚</p>
+            <label style="display:flex;align-items:center;gap:6px;margin-bottom:8px;color:var(--muted);font-weight:700;">
+              <input class="hotel-no-redeem-night" type="checkbox" ${noRedeemChecked} />
+              無可兌換房晚（此晚僅以現金計算）
+            </label>
+            <div class="mini-input-wrap" style="margin-bottom: 8px;">
+              <span class="prefix">計畫</span>
+              <select class="hotel-plan-select" ${disableRedeemInputs}>${planOptions}</select>
+            </div>
+            <div class="mini-input-wrap">
+              <input class="hotel-point-night" type="number" min="0" value="${pointsValue}" ${disableRedeemInputs} />
+              <span class="suffix">點</span>
+            </div>
+            <div class="mini-input-wrap" style="margin-top: 8px;">
+              <span class="prefix">NT$</span>
+              <input class="hotel-point-value-night" type="number" min="0.01" step="0.01" value="${pointValue}" ${disableRedeemInputs} />
+              <span class="suffix">/ 點</span>
+            </div>
+          </div>
+        `);
+      }
+    }
+
+    function safeTotal(values) {
+      return values.every((v) => Number(v) > 0) ? values.reduce((sum, value) => sum + value, 0) : null;
+    }
+
+    function loadHotelHistory() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(hotelHistoryKey) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveHotelHistory(entry) {
+      const history = loadHotelHistory();
+      history.unshift(entry);
+      localStorage.setItem(hotelHistoryKey, JSON.stringify(history.slice(0, 3)));
+    }
+
+    function renderHotelHistory() {
+      const history = loadHotelHistory();
+      if (!history.length) return "<div class='mile-worth'>尚無歷史紀錄。</div>";
+      const items = history.map((item, idx) => {
+        const copyDisabled = item.summary ? "" : "disabled";
+        return `<li class="history-item"><span>${item.time}｜${item.nights} 晚｜最佳：${fmtTwd(item.bestTotal)}</span><button class="history-copy-btn" type="button" data-history-index="${idx}" ${copyDisabled}>複製該次摘要</button></li>`;
+      }).join("");
+      return `<div class="mile-worth">最近 3 次紀錄</div><ol class="history-list">${items}</ol>`;
+    }
+
+    function calcHotel() {
+      const nights = Number(hotelNightsInput.value);
+      const cashValues = Array.from(document.querySelectorAll(".hotel-cash-night")).map((el) => Number(el.value));
+      const hotelNames = Array.from(document.querySelectorAll(".hotel-name-night")).map((el, idx) => el.value.trim() || `未命名飯店${idx + 1}`);
+      const pointValues = Array.from(document.querySelectorAll(".hotel-point-night")).map((el) => Number(el.value));
+      const pointValueByNight = Array.from(document.querySelectorAll(".hotel-point-value-night")).map((el) => Number(el.value));
+      const nightPlans = Array.from(document.querySelectorAll(".hotel-plan-select")).map((el) => el.value || hotelPlans[0]);
+      const nightCurrencies = Array.from(document.querySelectorAll(".hotel-currency-night")).map((el) => el.value || "TWD");
+      const noRedeemFlags = readNightChecked(".hotel-no-redeem-night");
+      if (!nights || nights <= 0) {
+        hotelResult.innerHTML = "<div>請確認晚數大於 0。</div>";
+        return;
+      }
+
+      const allValid = cashValues.every((v) => v >= 0)
+        && pointValues.every((v, idx) => noRedeemFlags[idx] || v >= 0)
+        && pointValueByNight.every((v, idx) => noRedeemFlags[idx] || v > 0);
+      if (!allValid || cashValues.length !== nights || hotelNames.length !== nights || pointValues.length !== nights || pointValueByNight.length !== nights || nightPlans.length !== nights || nightCurrencies.length !== nights || noRedeemFlags.length !== nights) {
+        hotelResult.innerHTML = "<div>請輸入正確的每晚現金、點數與每點估值資料。</div>";
+        return;
+      }
+
+      const twdRateReady = nightCurrencies.every((currency) => Number(exchangeRatesToTwd[currency]) > 0);
+      if (!twdRateReady) {
+        hotelResult.innerHTML = "<div>匯率資料不完整，請先按「更新匯率」。</div>";
+        return;
+      }
+
+      const cashValuesTwd = cashValues.map((cash, idx) => cash * exchangeRatesToTwd[nightCurrencies[idx]]);
+      const pointsEquivalent = pointValues.map((p, idx) => {
+        if (noRedeemFlags[idx]) return 0;
+        return p * pointValueByNight[idx];
+      });
+      const allCashTotal = safeTotal(cashValuesTwd);
+      const hasNoRedeemNight = noRedeemFlags.some(Boolean);
+      const allPointsEquivalentTotal = hasNoRedeemNight ? null : safeTotal(pointsEquivalent);
+      const allPointsRaw = hasNoRedeemNight ? null : safeTotal(pointValues);
+
+      const nightDecisions = [];
+      const summaryLines = [];
+      let mixedTotal = 0;
+      for (let i = 0; i < nights; i += 1) {
+        const cash = cashValuesTwd[i];
+        const pointEq = pointsEquivalent[i];
+        const canCash = cash > 0;
+        const canPoint = !noRedeemFlags[i] && pointValues[i] > 0;
+        const orderLabel = nightOrderText[i] || `第 ${i + 1} 晚`;
+        const planLabel = noRedeemFlags[i] ? "無可兌換房晚" : nightPlans[i];
+        const nightLabel = `${orderLabel}｜${hotelNames[i]}｜${planLabel}｜${nightCurrencies[i]}`;
+        if (!canCash && !canPoint) {
+          hotelResult.innerHTML = `<div>${nightLabel} 現金與點數都為 0，無法比較。</div>`;
+          return;
+        }
+        if (canCash && (!canPoint || cash <= pointEq)) {
+          mixedTotal += cash;
+          nightDecisions.push(`${nightLabel}：建議現金（原幣 ${nightCurrencies[i]} ${fmt2(cashValues[i])}，約 ${fmtTwd(cash)}）`);
+          summaryLines.push(`${nightLabel}：現金 原幣 ${nightCurrencies[i]} ${fmt2(cashValues[i])}（約 ${fmtTwd(cash)}）`);
+        } else {
+          mixedTotal += pointEq;
+          nightDecisions.push(`${nightLabel}：建議點數（${pointValues[i].toLocaleString("zh-Hant-TW")} 點，估值 NT$${fmt2(pointValueByNight[i])} / 點，約 ${fmtTwd(pointEq)}）`);
+          summaryLines.push(`${nightLabel}：點數 ${pointValues[i].toLocaleString("zh-Hant-TW")} 點（估值 NT$${fmt2(pointValueByNight[i])} / 點，約 ${fmtTwd(pointEq)}）`);
+        }
+      }
+
+      const fallbackCashText = allCashTotal === null ? "資料不足（有房晚未填現金）" : fmtTwd(allCashTotal);
+      const fallbackPointText = allPointsEquivalentTotal === null || allPointsRaw === null
+        ? "不適用（包含無可兌換房晚或點數資料不足）"
+        : `${allPointsRaw.toLocaleString("zh-Hant-TW")} 點（等值 ${fmtTwd(allPointsEquivalentTotal)}）`;
+
+      const now = new Date();
+      const timeLabel = now.toLocaleString("zh-Hant-TW", {
+        month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+      });
+      latestHotelSummary = [
+        `[飯店最省組合摘要] ${timeLabel}`,
+        `總晚數：${nights} 晚`,
+        `每晚點數估值：以台幣（NT$）計算`,
+        `混搭最低成本：${fmtTwd(mixedTotal)}`,
+        `全現金：${fallbackCashText}`,
+        `全點數：${fallbackPointText}`,
+        ...summaryLines
+      ].join("\n");
+      saveHotelHistory({ time: timeLabel, nights, bestTotal: mixedTotal, summary: latestHotelSummary });
+      copyHotelSummaryBtn.disabled = false;
+      copyHotelSummaryHint.textContent = "可點擊上方按鈕複製摘要。";
+
+      hotelResult.innerHTML = `
+        <div>比較 ${nights} 晚後，你的最省方案如下：</div>
+        <div class="kpi">混搭最低成本：${fmtTwd(mixedTotal)}</div>
+        <div class="mile-worth">全現金：${fallbackCashText}</div>
+        <div class="mile-worth">全點數：${fallbackPointText}</div>
+        <div>${nightDecisions.join("<br />")}</div>
+        ${renderHotelHistory()}
+      `;
+    }
+
+    async function copyHotelSummary() {
+      if (!latestHotelSummary) {
+        copyHotelSummaryHint.textContent = "請先計算一次結果再複製。";
+        return;
+      }
+      await copyTextWithFallback(latestHotelSummary);
+      copyHotelSummaryHint.textContent = "已複製到剪貼簿。";
+    }
+
+    function setRateStatus(text) {
+      rateStatusText.textContent = text;
+    }
+
+    function renderRateDetails() {
+      const lines = hotelCurrencies
+        .filter((currency) => currency !== "TWD")
+        .map((currency) => `1 ${currency} = NT$${fmt2(exchangeRatesToTwd[currency])}`);
+      rateDetailText.innerHTML = lines.join("<br />");
+    }
+
+    async function refreshExchangeRates() {
+      refreshRatesBtn.disabled = true;
+      setRateStatus("更新匯率中...");
+      try {
+        const response = await fetch("https://open.er-api.com/v6/latest/TWD");
+        const data = await response.json();
+        if (!response.ok || data.result !== "success" || !data.rates) {
+          throw new Error("匯率來源回傳失敗");
+        }
+        const rates = data.rates;
+        exchangeRatesToTwd = {
+          TWD: 1,
+          USD: 1 / rates.USD,
+          JPY: 1 / rates.JPY,
+          KRW: 1 / rates.KRW,
+          EUR: 1 / rates.EUR,
+          GBP: 1 / rates.GBP
+        };
+        const updatedAt = new Date(data.time_last_update_unix * 1000);
+        setRateStatus(`匯率已更新：${updatedAt.toLocaleString("zh-Hant-TW")}`);
+        renderRateDetails();
+      } catch (e) {
+        setRateStatus("匯率更新失敗，使用目前已儲存匯率。");
+        renderRateDetails();
+      } finally {
+        refreshRatesBtn.disabled = false;
+      }
+    }
+
+    async function copyTextWithFallback(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        return true;
+      }
+    }
+
+    async function copyHistorySummary(historyIndex) {
+      const history = loadHotelHistory();
+      const record = history[historyIndex];
+      if (!record || !record.summary) {
+        copyHotelSummaryHint.textContent = "該筆紀錄沒有可複製摘要。";
+        return;
+      }
+      await copyTextWithFallback(record.summary);
+      copyHotelSummaryHint.textContent = `已複製 ${record.time} 的摘要。`;
     }
 
     function calc() {
@@ -365,9 +990,52 @@
       `;
     }
 
-    targetValueInput.addEventListener("input", updateTargetText);
+    flightTabBtn.addEventListener("click", () => switchPage("flight"));
+    hotelTabBtn.addEventListener("click", () => switchPage("hotel"));
+    targetValueInput.addEventListener("input", () => {
+      setTargetValue(targetValueInput.value);
+    });
+    targetValueNumberInput.addEventListener("input", () => {
+      if (targetValueNumberInput.value === "") return;
+      setTargetValue(targetValueNumberInput.value);
+    });
+    targetValueNumberInput.addEventListener("blur", () => {
+      setTargetValue(targetValueNumberInput.value || targetValueInput.min);
+    });
+    targetMinusBtn.addEventListener("click", () => {
+      setTargetValue(Number(targetValueInput.value) - Number(targetValueInput.step || 0.01));
+    });
+    targetPlusBtn.addEventListener("click", () => {
+      setTargetValue(Number(targetValueInput.value) + Number(targetValueInput.step || 0.01));
+    });
+    hotelNightsInput.addEventListener("input", renderNightLists);
+    pointsNightList.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) return;
+      if (!target.classList.contains("hotel-no-redeem-night")) return;
+      renderNightLists();
+    });
+    cashNightList.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLSelectElement)) return;
+      if (!target.classList.contains("hotel-currency-night")) return;
+      renderNightLists();
+    });
+    calculateHotelBtn.addEventListener("click", calcHotel);
+    copyHotelSummaryBtn.addEventListener("click", copyHotelSummary);
+    refreshRatesBtn.addEventListener("click", refreshExchangeRates);
+    hotelResult.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const indexText = target.getAttribute("data-history-index");
+      if (!target.classList.contains("history-copy-btn") || indexText === null) return;
+      copyHistorySummary(Number(indexText));
+    });
     calculateBtn.addEventListener("click", calc);
-    updateTargetText();
+    setTargetValue(targetValueInput.value);
+    renderNightLists();
+    renderRateDetails();
+    refreshExchangeRates();
     calc();
   </script>
 </body>
