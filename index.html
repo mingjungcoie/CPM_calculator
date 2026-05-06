@@ -969,7 +969,11 @@
       const cashPrice = Number(cashPriceInput.value);
       const milesNeeded = Number(milesNeededInput.value);
       const taxFee = Number(taxFeeInput.value);
-      const targetValue = Number(targetValueInput.value);
+      const rawTargetValue = targetValueNumberInput.value === ""
+        ? Number(targetValueInput.value)
+        : Number(targetValueNumberInput.value);
+      const targetValue = clampTargetValue(Number.isFinite(rawTargetValue) ? rawTargetValue : Number(targetValueInput.min));
+      setTargetValue(targetValue);
 
       if (!cashPrice || !milesNeeded || milesNeeded <= 0 || cashPrice < 0 || taxFee < 0) {
         resultBox.innerHTML = "<div>請輸入正確數字（票價、哩數、稅費）。</div>";
@@ -980,6 +984,7 @@
       const valuePerMile = netSaved / milesNeeded;
       const cpm = valuePerMile * 100;
       const targetGap = valuePerMile - targetValue;
+      const calculatedAt = new Date().toLocaleTimeString("zh-Hant-TW", { hour12: false });
 
       let verdictClass = "ok";
       let verdict = "普通";
@@ -995,9 +1000,11 @@
         <div>你用哩程換票後，等效每哩價值為：</div>
         <div class="kpi">NT$${fmt2(valuePerMile)} / 哩（CPM：${fmt2(cpm)}）</div>
         <div class="mile-worth">相當於 1 哩可換到：NT$${fmt2(valuePerMile)}</div>
+        <div class="mile-worth">你的每哩估值基準：NT$${fmt2(targetValue)} / 哩</div>
         <div>現金票價：${fmtTwd(cashPrice)}，扣除兌換仍要付的稅費：${fmtTwd(taxFee)}</div>
         <div>等於你用 ${milesNeeded.toLocaleString("zh-Hant-TW")} 哩換到約 ${fmtTwd(netSaved)} 的價值。</div>
         <div class="score ${verdictClass}">結論：${verdict}</div>
+        <div class="hint">本次計算時間：${calculatedAt}</div>
       `;
     }
 
